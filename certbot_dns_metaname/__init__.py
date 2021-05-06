@@ -141,7 +141,7 @@ class Authenticator(dns_common.DNSAuthenticator):
     def _metaname_domain_name_for_hostname(self, hostname):
         """
         For a given hostname attempt to find the parent zone it belongs to.
-        
+
         For instance, if "example.com" is hosted with Metaname then "example.com" will be returned for the hostname "test.example.com".
         If there are no candidate domain names then an exception is raised.
         """
@@ -151,8 +151,8 @@ class Authenticator(dns_common.DNSAuthenticator):
         guesses = dns_common.base_domain_name_guesses(".".join(hostname.split(".")[1:]))
         for guess in guesses:
             try:
-                zone = self._metaname_client().request("dns_zone", guess)
-            except Exception as e:
+                self._metaname_client().request("dns_zone", guess)
+            except Exception:
                 continue
             else:
                 return guess
@@ -189,7 +189,7 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         domain_name = self._metaname_domain_name_for_hostname(validation_name)
         try:
-            response = self._metaname_client().request(
+            self._metaname_client().request(
                 "delete_dns_record", domain_name, self.created_record_reference
             )
         except Exception as e:
