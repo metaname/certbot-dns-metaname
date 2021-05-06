@@ -1,9 +1,12 @@
-# Project-specific
-venv
+## Project-specific
+.pyre
+.pyre_configuration
+.watchmanconfig
 metaname.ini
+venv
 working/
 
-# Python boilerplate
+## Python boilerplate
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
