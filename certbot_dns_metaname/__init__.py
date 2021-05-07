@@ -13,7 +13,7 @@ from certbot import errors
 from certbot import interfaces
 from certbot.plugins import dns_common
 
-## Generic Metaname API client
+## Metaname API client
 
 
 class MetanameApiClient:
