@@ -87,31 +87,31 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(
             self.client.payload,
             {"jsonrpc": "2.0"},
-            "default jsonrpc version missing from payload",
+            "incorrect jsonrpc version in payload template",
         )
         self.assertEqual(
             self.client.auth_params,
             (account_reference, api_key),
-            "authentication missing from params",
+            "authentication missing from params template",
         )
-        self.assertEqual(self.client.endpoint, endpoint, "API endpoint not overridden")
+        self.assertEqual(self.client.endpoint, endpoint, "custom API endpoint ignored")
 
     @mock.patch("certbot_dns_metaname.requests.Session.post", side_effect=mock_api_post)
     def test_request(self, mock_post):
         # API call that doesn't return JSON
-        with self.assertRaises(Exception, msg="non-json API call not handled") as cm:
+        with self.assertRaises(Exception, msg="invalid JSON not caught") as cm:
             self.client.request("invalid-json")
         self.assertIn(
             "Metaname API didn't return a JSON response",
             cm.exception.args[0],
-            "incorrect response to non-JSON reply from Metaname API",
+            "invalid JSON did not produce expected exception",
         )
 
         # API call with "result"
         self.assertIsInstance(
             self.client.request("price", "example.com", 12, False),
             float,
-            "API result not handled",
+            "successful API response not handled",
         )
 
         # API call with "error"
@@ -120,40 +120,40 @@ class ClientTest(unittest.TestCase):
         self.assertIn(
             "Metaname API error",
             cm.exception.args[0],
-            "incorrect response to 'error' from Metaname API",
+            "API error did not produce expected exception",
         )
 
-        # API call fails entirely
+        # requests fails entirely
         with self.assertRaises(
-            Exception, msg="generic API call failure not handled"
+            Exception, msg="generic requests failure not caught"
         ) as cm:
             self.client.request("general-failure")
         self.assertIn(
             "Metaname API call failed: ",
             cm.exception.args[0],
-            "incorrect response to unhandled failure calling Metaname API",
+            "generic requests failure did not produce expected exception",
         )
 
         # API response is out of sequence
         with self.assertRaises(
-            Exception, msg="generic API call failure not handled"
+            Exception, msg="out of order API response not caught"
         ) as cm:
             self.client.request("wrong-sequence")
         self.assertIn(
             "Metaname API returned out of sequence response: ",
             cm.exception.args[0],
-            "incorrect response to Metaname API response out of sequence",
+            "out of order API response did not produce expected exception",
         )
 
         # API responds but has no result or error
         with self.assertRaises(
-            Exception, msg="API responded without result or error"
+            Exception, msg="API response containing neither result or error not caught"
         ) as cm:
             self.client.request("undefined-response")
         self.assertIn(
             "Metaname API returned an invalid response: ",
             cm.exception.args[0],
-            "incorrect response to Metaname API with undefined result / error",
+            "API response containing neither result or error did not produce expected exception",
         )
 
 
@@ -209,7 +209,8 @@ class AuthenticatorTest(
         )
 
     @mock.patch("certbot_dns_metaname.requests.Session.post", side_effect=mock_api_post)
-    def test_perform(self, mock_post):
+    def test_perform_success(self, mock_post):
+        # test using a domain that is present in the account
         self.auth._setup_credentials()
         self.auth._perform(
             "example.com", "_acme-challenge.test.example.com", "test_validation"
@@ -218,6 +219,24 @@ class AuthenticatorTest(
             self.auth.created_record_reference,
             "record_reference",
             "record reference not stored after record creation",
+        )
+
+    @mock.patch("certbot_dns_metaname.requests.Session.post", side_effect=mock_api_post)
+    def test_perform_invalid_domain(self, mock_post):
+        # test using a domain that doesn't belong to the account
+        self.auth._setup_credentials()
+        with self.assertRaises(
+            Exception, msg="attempted use of invalid domain not caught"
+        ) as cm:
+            self.auth._perform(
+                "example.invalid",
+                "_acme-challenge.test.example.invalid",
+                "test_validation",
+            )
+        self.assertIn(
+            "Unable to find any Metaname zone for _acme-challenge.test.example.invalid",
+            cm.exception.args[0],
+            "incorrect exception attempting use of invalid domain",
         )
 
     @mock.patch("certbot_dns_metaname.requests.Session.post", side_effect=mock_api_post)
