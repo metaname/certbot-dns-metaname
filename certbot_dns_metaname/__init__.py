@@ -162,7 +162,7 @@ class Authenticator(dns_common.DNSAuthenticator):
 
         # XXX At the moment this hits some bugs in the Metaname API (the validation on "domain_name" is incorrect, there is no method to return a list of hosted zones so it uses trial and error)
         hostname = hostname.strip(".").split(".", 1)[
-            1:
+            1
         ]  # remove the well-known prefix from the validation hostname
         guesses = dns_common.base_domain_name_guesses(hostname)
         for guess in guesses:
