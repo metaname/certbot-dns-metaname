@@ -30,7 +30,7 @@ For older versions of certbot you may need to prefix each line with `certbot_dns
 
 ## Usage
 
-The first time you use the `dns-metaname` plugin it will ask you for the path to your `metaname.ini` credentials file. To skip this interactive prompt add the `--metaname-dns-credentials` option to your invocations of `certbot`.
+The first time you use the `dns-metaname` plugin it will ask you for the path to your `metaname.ini` credentials file. To skip this interactive prompt add the `--metaname-dns-credentials` option to your invocations of `certbot`, passing it the path to `metaname.ini`.
 
 For instance, if you have `example.com` configured for DNS hosting in your Metaname account, a certificate for `www.example.com` can be requested from Let's Encrypt with `certbot`:
 
