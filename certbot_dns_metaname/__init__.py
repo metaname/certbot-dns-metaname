@@ -196,3 +196,5 @@ class Authenticator(dns_common.DNSAuthenticator):
             raise errors.PluginError(
                 f"Unable to delete the acme-challenge record in the zone {domain}: {e}"
             ) from e
+        else:
+            self.created_record_reference = None
