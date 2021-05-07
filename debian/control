@@ -3,6 +3,7 @@ Maintainer: Metaname <support@metaname.nz>
 Section: python
 Priority: optional
 Build-Depends: debhelper (>= 11~),
+               certbot,
                dh-python,
                python3 (>= 3.6),
                python3-setuptools
