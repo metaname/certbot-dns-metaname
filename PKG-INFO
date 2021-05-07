@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: certbot-dns-metaname
+Version: 0.0.1
+Summary: Certbot DNS plugin for the Metaname API
+Home-page: https://github.com/metaname/certbot-dns-metaname
+Author: Metamame
+Author-email: support@metaname.nz
+License: Apache License 2.0
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Plugins
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: Apache Software License
+Requires-Python: >=3.6

@@ -1,7 +1,21 @@
+# Copyright 2021 Metaname <https://metaname.net/>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 Certbot plugin for DNS authentication using the Metaname DNS API.
 
-Michael Fincham <michael@hotplate.co.nz> 2021-05-06
+Metaname <support@metaname.nz> 2021-05-06
 """
 
 import json
@@ -147,7 +161,9 @@ class Authenticator(dns_common.DNSAuthenticator):
         """
 
         # XXX At the moment this hits some bugs in the Metaname API (the validation on "domain_name" is incorrect, there is no method to return a list of hosted zones so it uses trial and error)
-        hostname = hostname.strip(".").split('.', 1)[1:] # remove the well-known prefix from the validation hostname
+        hostname = hostname.strip(".").split(".", 1)[
+            1:
+        ]  # remove the well-known prefix from the validation hostname
         guesses = dns_common.base_domain_name_guesses(hostname)
         for guess in guesses:
             try:

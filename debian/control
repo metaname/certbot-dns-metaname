@@ -1,0 +1,6 @@
+Package: python3-certbot-dns-metaname
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends}
+Enhances: certbot
+Description: Certbot DNS plugin for the Metaname API
