@@ -10,7 +10,7 @@ You'll need a Metaname account and API token to use this plugin.
 
 A `.deb` package is available from https://github.com/metaname/certbot-dns-metaname/releases for Debian or Ubuntu system that have `certbot` installed via `apt`.
 
-Alternatively, using Python packaging tools after downloading and unpacking the source code:
+Alternatively, use Python packaging tools after downloading and unpacking the source code:
 
 ```console
 # python setup.py install
