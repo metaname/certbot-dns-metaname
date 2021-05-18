@@ -48,10 +48,15 @@ class FakeApiResponse:
             self.response = {**preamble, "id": "invalid"}
         elif json["method"] == "undefined-response":
             self.response = {**preamble, "invalid": "invalid"}
-        elif json["method"] == "dns_zone" and json["params"][-1] == "example.com":
-            self.response = {**preamble, "result": {}}
-        elif json["method"] == "dns_zone" and json["params"][-1] != "example.com":
-            self.response = {**preamble, "error": {}}
+        elif json["method"] == "dns_zones":
+            self.response = {
+                **preamble,
+                "result": [
+                    {"name": "example.com"},
+                    {"name": "another-test.example.com"},
+                    {"name": "example.net"},
+                ],
+            }
         elif json["method"] == "create_dns_record" and json["params"] == (
             "test_account_reference",
             "test_api_key",
@@ -248,7 +253,7 @@ class AuthenticatorTest(
                 "test_validation",
             )
         self.assertIn(
-            "Unable to find any Metaname zone for _acme-challenge.test.example.invalid",
+            "Unable to find a Metaname DNS zone for test.example.invalid",
             cm.exception.args[0],
             "incorrect exception attempting use of invalid domain",
         )
@@ -266,6 +271,31 @@ class AuthenticatorTest(
         )
         self.auth._cleanup(
             "example.com", "_acme-challenge.test.example.com", "test_validation"
+        )
+
+    @mock.patch("certbot_dns_metaname.requests.Session.post", side_effect=mock_api_post)
+    def test_find_zone(self, mock_post):
+        self.auth._setup_credentials()
+        # zone that is findable
+        self.assertEqual(
+            self.auth._metaname_domain_name_for_hostname(
+                "_acme-challenge.something.example.com"
+            ),
+            "example.com",
+            "_metaname_domain_name_for_hostname finds wrong zone",
+        )
+
+        # zone that is not findable
+        with self.assertRaises(
+            Exception, msg="Zone not present in account not caught"
+        ) as cm:
+            self.auth._metaname_domain_name_for_hostname(
+                "_acme-challenge.something.example.org"
+            ),
+        self.assertIn(
+            "Unable to find a Metaname DNS zone for something.example.org",
+            cm.exception.args[0],
+            "API response containing neither result or error did not produce expected exception",
         )
 
 

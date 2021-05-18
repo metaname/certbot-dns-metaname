@@ -160,19 +160,22 @@ class Authenticator(dns_common.DNSAuthenticator):
         If there are no candidate domain names then an exception is raised.
         """
 
-        # XXX At the moment this hits some bugs in the Metaname API (the validation on "domain_name" is incorrect, there is no method to return a list of hosted zones so it uses trial and error)
         hostname = hostname.strip(".").split(".", 1)[
             1
         ]  # remove the well-known prefix from the validation hostname
+        try:
+            zones_in_account = [
+                i["name"] for i in self._metaname_client().request("dns_zones")
+            ]
+        except Exception as e:
+            raise errors.PluginError(
+                f"Unable to request the list of hosted DNS zones: {e}"
+            ) from e
         guesses = dns_common.base_domain_name_guesses(hostname)
         for guess in guesses:
-            try:
-                self._metaname_client().request("dns_zone", guess)
-            except Exception:
-                continue
-            else:
+            if guess in zones_in_account:
                 return guess
-        raise errors.PluginError(f"Unable to find any Metaname zone for {hostname}")
+        raise errors.PluginError(f"Unable to find a Metaname DNS zone for {hostname}")
 
     def _perform(self, domain, validation_name, validation):
         """
