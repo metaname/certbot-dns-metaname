@@ -3,6 +3,7 @@
 .pyre_configuration
 .watchmanconfig
 metaname.ini
+dotest.py
 venv
 working/
 
