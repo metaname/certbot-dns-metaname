@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: certbot-dns-metaname
-Version: 0.0.1
+Version: 0.0.2
 Summary: Certbot DNS plugin for the Metaname API
 Home-page: https://github.com/metaname/certbot-dns-metaname
 Author: Metamame

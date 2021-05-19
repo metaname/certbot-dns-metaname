@@ -1,3 +1,9 @@
+python3-certbot-dns-metaname (0.0.2-1) unstable; urgency=medium
+
+  * Makes more efficient use of Metaname API.
+
+ -- Metaname <support@metaname.nz>  Wed, 19 May 2021 16:33:07 +1200
+
 python3-certbot-dns-metaname (0.0.1-1) unstable; urgency=medium
 
   * Initial release.

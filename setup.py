@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="certbot-dns-metaname",
-    version="0.0.1",
+    version="0.0.2",
     description="Certbot DNS plugin for the Metaname API",
     url="https://github.com/metaname/certbot-dns-metaname",
     author="Metaname",
